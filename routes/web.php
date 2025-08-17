@@ -1,15 +1,22 @@
 <?php
 
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\RutaController;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::resource('proyectos', RutaController::class);
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('proyectos/{proyecto}/delete', [RutaController::class, 'destroyConfirm'])
-     ->name('proyectos.delete');
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::resource('proyectos', App\Http\Controllers\RutaController::class);
+    // Agrega aquí otras rutas de proyectos si es necesario
+});
 
-Route::delete('/proyectos/{proyecto}', [RutaController::class, 'destroy'])->name('proyectos.destroy');
+require __DIR__.'/auth.php';

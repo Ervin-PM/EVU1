@@ -9,8 +9,8 @@ class RutaController extends Controller
 {
     public function index()
     {
-        $proyecto = Proyectos::all();  // obtén todos los proyectos
-        return view('proyectos.index', compact('proyecto'));
+    $proyecto = Proyectos::all();  // obtén todos los proyectos
+    return view('proyectos.index', compact('proyecto'));
     }
 
     public function create()
@@ -20,7 +20,9 @@ class RutaController extends Controller
 
     public function store(Request $request)
     {
-        $proyecto = Proyectos::create($request->all());
+        $data = $request->all();
+        $data['created_by'] = auth()->id(); // Asigna el usuario autenticado
+        $proyecto = Proyectos::create($data);
         return redirect()->route('proyectos.index')->with('success', 'Proyecto creado con éxito');
     }
 

@@ -1,0 +1,130 @@
+<h1 id="informe-técnico---desarrollo-api-proyectos-evu1">Informe Técnico
+- Desarrollo API Proyectos (EVU1)</h1>
+<p>Fecha: 2025-09-07</p>
+<p>Autor: Equipo de Desarrollo (Tech Solutions)</p>
+<h2 id="resumen-ejecutivo">Resumen ejecutivo</h2>
+<p>Se implementó un API REST protegido por JWT para la gestión de
+proyectos junto con pruebas automáticas que validan los requisitos
+funcionales solicitados. Este informe documenta los cambios, la
+evidencia (salidas de comandos y resultados de pruebas) y
+conclusiones.</p>
+<h2 id="requerimientos-y-cobertura">Requerimientos y cobertura</h2>
+<ul>
+<li>POST /api/proyectos: crear proyecto, todos los campos requeridos,
+responde 201. — CUMPLIDO</li>
+<li>GET /api/proyectos: listar todos, 200, devuelve arreglo vacío si no
+hay registros. — CUMPLIDO</li>
+<li>GET /api/proyectos/{id}: devuelve 200 con datos o 404 si no existe.
+— CUMPLIDO</li>
+<li>PUT/PATCH /api/proyectos/{id}: actualizar, devuelve 200 y datos
+actualizados (404 si no existe). — CUMPLIDO</li>
+<li>DELETE /api/proyectos/{id}: elimina, devuelve 204 y cuerpo vacío
+(404 si no existe). — CUMPLIDO</li>
+</ul>
+<h2 id="evidencias-incluidas">Evidencias incluidas</h2>
+<ol type="1">
+<li>Archivo de colección Postman:
+<code>postman/EVU1-api-collection.json</code> (requests de
+register/login y endpoints de proyectos).</li>
+<li>Tests automatizados: <code>tests/Feature/ProyectoApiTest.php</code>
+(Pest / PHPUnit).</li>
+<li>Salida de <code>php artisan route:list --path=api</code>.</li>
+<li>Salida de ejecución de pruebas (Pest).</li>
+<li>Archivos modificados/creados relevantes.</li>
+</ol>
+<h2 id="archivos-creados-modificados">Archivos creados /
+modificados</h2>
+<ul>
+<li><code>app/Http/Controllers/Api/ProyectoApiController.php</code> —
+Controlador API con index, store, show, update, destroy.</li>
+<li><code>routes/api.php</code> — Rutas API actualizadas (uso directo de
+middleware JwtMiddleware::class).</li>
+<li><code>app/Http/Middleware/JwtMiddleware.php</code> — Middleware
+existente que valida token JWT.</li>
+<li><code>app/Models/Proyectos.php</code> — Modelo con $fillable
+apropiado (incluye created_by).</li>
+<li><code>postman/EVU1-api-collection.json</code> — Colección Postman
+para pruebas.</li>
+<li><code>tests/Feature/ProyectoApiTest.php</code> — Tests Feature con
+RefreshDatabase y JWT.</li>
+</ul>
+<hr />
+<h2 id="salida-de-php-artisan-routelist---pathapi">1) Salida de
+<code>php artisan route:list --path=api</code></h2>
+<pre><code>(  POST            api/login ............................................................................................. AuthController@login
+    GET|HEAD        api/proyectos .............................................................................. Api\ProyectoApiController@index  
+    POST            api/proyectos .............................................................................. Api\ProyectoApiController@store  
+    GET|HEAD        api/proyectos/{id} .......................................................................... Api\ProyectoApiController@show  
+    PUT|PATCH       api/proyectos/{id} ........................................................................ Api\ProyectoApiController@update  
+    DELETE          api/proyectos/{id} ....................................................................... Api\ProyectoApiController@destroy  
+    POST            api/register ....................................................................................... AuthController@register  
+
+                                                                                                                                                                                                                                                        Showing [7] routes)</code></pre>
+<h2 id="salida-de-ejecución-de-pruebas-pest">2) Salida de ejecución de
+pruebas (Pest)</h2>
+<pre><code>(PHPUnit 11.5.15 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.2.12
+Configuration: C:\laragon\www\EVU1\phpunit.xml
+
+
+     PASS  Tests\Feature\ProyectoApiTest
+    ✓ list projects returns empty array when none                                                                                          0.46s  
+    ✓ create project returns 201 and stores                                                                                                0.03s  
+    ✓ show returns 200 or 404                                                                                                              0.02s  
+    ✓ update project returns 200 and updates                                                                                               0.02s  
+    ✓ delete project returns 204 and removes                                                                                               0.02s  
+
+    Tests:    5 passed (16 assertions)
+    Duration: 0.73s
+
+Time: 00:00.580, Memory: 44.00 MB
+
+Proyecto Api (Tests\Feature\ProyectoApi)
+ ✔ List projects returns empty array when none
+ ✔ Create project returns 201 and stores
+ ✔ Show returns 200 or 404
+ ✔ Update project returns 200 and updates
+ ✔ Delete project returns 204 and removes
+
+OK (5 tests, 16 assertions))</code></pre>
+<h2 id="fragmentos-de-código-relevantes">3) Fragmentos de código
+relevantes</h2>
+<ul>
+<li>Método <code>store</code> en <code>ProyectoApiController</code>
+(validación y creación, asigna created_by):</li>
+</ul>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode php"><code class="sourceCode php"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">// ... (ver archivo app/Http/Controllers/Api/ProyectoApiController.php)</span></span></code></pre></div>
+<ul>
+<li>Middleware utilizado en rutas:</li>
+</ul>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode php"><code class="sourceCode php"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>Route::middleware([\App\Http\Middleware\JwtMiddleware::<span class="kw">class</span>])-&gt;group(<span class="kw">function</span> () {</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">// rutas proyectos</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>})<span class="ot">;</span></span></code></pre></div>
+<h2 id="pruebas-realizadas">4) Pruebas realizadas</h2>
+<p>Se ejecutaron las pruebas automáticas unitarias/feature con Pest
+(PHPUnit). Las pruebas cubren: - Listado vacío - Creación y comprobación
+en BD - Recuperación por id y 404 - Actualización y comprobación en BD -
+Eliminación y verificación</p>
+<h2 id="conclusiones-y-próximos-pasos">5) Conclusiones y próximos
+pasos</h2>
+<ul>
+<li>Todos los requisitos funcionales solicitados están implementados y
+verificados con tests automatizados.</li>
+<li>Recomendado: generar colección Postman con variables de entorno en
+el entorno de pruebas para facilitar la reproducción (ya existe en
+<code>postman/EVU1-api-collection.json</code>).</li>
+<li>Si deseas, genero el PDF del informe y lo adjunto al repositorio; si
+la conversión automática falla en este entorno, dejaré el Markdown y las
+instrucciones para convertirlo localmente.</li>
+</ul>
+<hr />
+<p>Anexo: evidencia detallada</p>
+<h3 id="a.-php-artisan-routelist---pathapi-output">A.
+<code>php artisan route:list --path=api</code> output</h3>
+<pre><code>(ROUTE_LIST_OUTPUT)</code></pre>
+<h3 id="b.-ejecución-de-pruebas-pest">B. Ejecución de pruebas
+(Pest)</h3>
+<pre><code>(PEST_OUTPUT)</code></pre>

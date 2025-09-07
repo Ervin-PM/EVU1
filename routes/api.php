@@ -2,15 +2,15 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\RutaController;
+use App\Http\Controllers\Api\ProyectoApiController;
 use App\Http\Controllers\AuthController;
 
-Route::middleware(['jwt.verify'])->group(function () {
-    Route::get('/proyectos', [RutaController::class, 'index']);
-    Route::post('/proyectos', [RutaController::class, 'store']);
-    Route::get('/proyectos/{proyecto}', [RutaController::class, 'show']);
-    Route::put('/proyectos/{proyecto}', [RutaController::class, 'update']);
-    Route::delete('/proyectos/{proyecto}', [RutaController::class, 'destroy']);
+Route::middleware([\App\Http\Middleware\JwtMiddleware::class])->group(function () {
+    Route::get('/proyectos', [ProyectoApiController::class, 'index']);
+    Route::post('/proyectos', [ProyectoApiController::class, 'store']);
+    Route::get('/proyectos/{id}', [ProyectoApiController::class, 'show']);
+    Route::match(['put','patch'],'/proyectos/{id}', [ProyectoApiController::class, 'update']);
+    Route::delete('/proyectos/{id}', [ProyectoApiController::class, 'destroy']);
 });
 
 Route::post('/register', [AuthController::class, 'register']);

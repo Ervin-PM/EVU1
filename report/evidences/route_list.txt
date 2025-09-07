@@ -1,0 +1,9 @@
+POST            api/login AuthController@login
+GET|HEAD        api/proyectos Api\ProyectoApiController@index
+POST            api/proyectos Api\ProyectoApiController@store
+GET|HEAD        api/proyectos/{id} Api\ProyectoApiController@show
+PUT|PATCH       api/proyectos/{id} Api\ProyectoApiController@update
+DELETE          api/proyectos/{id} Api\ProyectoApiController@destroy
+POST            api/register AuthController@register
+
+Showing [7] routes

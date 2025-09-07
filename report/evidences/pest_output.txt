@@ -1,0 +1,11 @@
+PASS  Tests\Feature\ProyectoApiTest
+ ✓ list projects returns empty array when none 0.46s
+ ✓ create project returns 201 and stores 0.03s
+ ✓ show returns 200 or 404 0.02s
+ ✓ update project returns 200 and updates 0.02s
+ ✓ delete project returns 204 and removes 0.02s
+
+Tests: 5 passed (16 assertions)
+Duration: 0.73s
+
+OK (5 tests, 16 assertions)
